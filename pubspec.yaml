@@ -1,0 +1,79 @@
+name: stockcart
+description: A new Flutter project.
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^0.1.2
+  cloud_firestore: ^0.7.4
+  rxdart: ^0.18.1
+  scoped_model: ^0.2.0
+
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+# For information on the generic Dart part of this file, see the
+# following page: https://www.dartlang.org/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/image/placeholder_image.png
+    - assets/image/geobrowse.png
+    - assets/image/new_icon.png
+    - assets/image/offer_badge.png
+    - assets/image/shirt.jpg
+    - assets/image/offer_titled_image.png
+    - assets/image/offerstag.png
+    - assets/image/placeholder_image.png
+    - assets/image/rupee_normal.png
+    - assets/image/schedule_delivery_truck.png
+    - assets/image/placeholder.jpg
+
+#    - assets/image/placeholder_image.png
+#    - assets/image/placeholder_image.png
+#    - assets/image/placeholder_image.png
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.io/assets-and-images/#resolution-aware.
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.io/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  fonts:
+   - family: JosefinSans
+     fonts:
+       - asset: fonts/Josefin_Sans/JosefinSans-Light.ttf
+       - asset: fonts/Josefin_Sans/JosefinSans-Regular.ttf
+       - asset: fonts/Josefin_Sans/JosefinSans-SemiBold.ttf
+       - asset: fonts/Josefin_Sans/JosefinSans-Bold.ttf
+         weight: 900
+   - family: OpenSans
+     fonts:
+       - asset: fonts/Open_Sans/OpenSans-Light.ttf
+       - asset: fonts/Open_Sans/OpenSans-Regular.ttf
+       - asset: fonts/Open_Sans/OpenSans-SemiBold.ttf
+       - asset: fonts/Open_Sans/OpenSans-Bold.ttf
+         weight: 900
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.io/custom-fonts/#from-packages
