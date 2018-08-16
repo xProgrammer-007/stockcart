@@ -2,40 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:stockcart/pages/cart_screen/cart_bloc.dart';
 import 'package:stockcart/pages/cart_screen/cart_model.dart';
-import 'package:stockcart/pages/cart_screen/cart_screen.dart';
 import 'package:stockcart/pages/item_detail/colorSelector.dart';
-import 'package:stockcart/pages/item_detail/sizeConverters.dart';
 import 'package:stockcart/pages/item_detail/sizeSelector.dart';
 
 
-class ShopItem extends Cart{
+class ShopItem{
   final List<String> images;
   final String subTitle;
-  final int salePercent;
+  final String salePercent;
   final List<CustomColor> colorChoices;
   final List<ShirtSizeType> shirtSizeTypes;
-  final List<JeansSizeType> jeansSizeTypes;
+  final List<int> jeansSizeTypes;
   final String about;
   final String sellerContact;
+
+  final String itemName;
+  final String itemRate;
+  final String itemImageUrl;
+  final ClothingType clothingType;
+
+  int itemCount;
+  Color itemColor;
+  ShirtSizeType shirtSizeType;
+  int jeansSizeType;
 
   ShopItem({
     this.images = const [],
     this.subTitle = '',
     this.colorChoices = const [],
-    this.salePercent = 0,
+    this.salePercent,
     this.shirtSizeTypes = ShirtSizeType.values,
-    this.jeansSizeTypes = JeansSizeType.values,
+    this.jeansSizeTypes = const [],
     this.about = '',
     this.sellerContact = '',
-    itemName = '',
-    clothingType = ClothingType.none,
-    itemCount = 1,
-    itemColor = Colors.white,
-    itemImageUrl = '',
-    itemRate = ''
+    this.itemName = '',
+    this.clothingType = ClothingType.none,
+    this.itemCount = 1,
+    this.itemColor = Colors.white,
+    this.itemImageUrl = '',
+    this.itemRate = ''
 
   }){
-    print(clothingType);
+      print(clothingType);
   }
 
 }
@@ -76,7 +84,7 @@ class CartItemDetails extends StatelessWidget {
             children: <Widget>[
               Container(
                 height: 250.0,
-                child: Image.asset(shopItem.images[0],fit:BoxFit.cover),
+                child: Image.network(shopItem.images[0],fit:BoxFit.cover),
               ),
               Container(
                 transform: Matrix4.translationValues(100.0, -20.0, 0.0),
@@ -178,6 +186,7 @@ class CartItemDetails extends StatelessWidget {
                      }).toList(),
                      onTap: (Color color){
                        print(color);
+                       shopItem.itemColor = color;
                      },
                    ),
                     Divider(),
@@ -377,10 +386,14 @@ class CartItemDetails extends StatelessWidget {
                                   onPressed: (){
                                     model.addItem(
                                       Cart(
-                                        itemName: 'Shirt xa Saven',
-                                        itemImageUrl: '',
-                                        itemCount: 1,
-                                        itemRate: '1,999'
+                                        itemName: shopItem.itemName,
+                                        itemImageUrl: shopItem.images[0],
+                                        itemCount: shopItem.itemCount,
+                                        itemRate: shopItem.itemRate,
+                                        itemColor: shopItem.itemColor,
+                                        clothingType: shopItem.clothingType,
+                                        jeansSizeType: shopItem.jeansSizeType,
+                                        shirtSizeType: shopItem.shirtSizeType
                                       )
                                     );
                                   },

@@ -9,7 +9,7 @@ class SizeSelector extends StatefulWidget {
   ClothingType clothingType;
   final Function onTap;
   final List<ShirtSizeType> shirtSizeTypes;
-  final List<JeansSizeType> jeansSizeTypes;
+  final List<int> jeansSizeTypes;
   String selectedSize;
 
   SizeSelector({
@@ -31,7 +31,7 @@ class SizeSelector extends StatefulWidget {
 
   String _determineSize(size){
     if(clothingType == ClothingType.jeans){
-      return jeansSizeToString(size);
+      return size.toString();
     }else if(clothingType == ClothingType.shirt) {
       return shirtSizeToString(size);
     }else if(clothingType == ClothingType.tee_shirt){
@@ -112,8 +112,12 @@ class SizeSelectorState extends State<SizeSelector> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<CartBloc>(
       builder: (context,child,model){
-        return Row(
-          children: _buildSelector(model),
+        return Container(
+          height: 30.0,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: _buildSelector(model),
+          ),
         );
       },
     );

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:stockcart/components/customAppbar.dart';
 import 'package:stockcart/pages/cart_screen/cart_bloc.dart';
+import 'package:stockcart/pages/cart_screen/cart_model.dart';
+import 'package:stockcart/pages/item_detail/sizeConverters.dart';
 
 class CartScreen extends StatefulWidget {
   @override
@@ -11,6 +13,24 @@ class CartScreen extends StatefulWidget {
 }
 
 class CartScreenState extends State<CartScreen> {
+String _sizeMaker(Cart cartItem){
+   String size;
+  switch(cartItem.clothingType){
+      case ClothingType.jeans:
+        size = cartItem.jeansSizeType.toString();
+        break;
+      case ClothingType.shirt:
+        case ClothingType.tee_shirt:
+          size = shirtSizeToString(cartItem.shirtSizeType);
+        break;
+      case ClothingType.none:  //Still gotta implement these but later on
+      case ClothingType.shoes: //Still gotta implement these but later on
+        size = "_sizeMaker(err)";
+      break;
+
+    }
+    return size;
+  }
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -55,6 +75,7 @@ class CartScreenState extends State<CartScreen> {
                             selectedColor: model.cartItems[count].itemColor,
                             itemCount: model.cartItems[count].itemCount,
                             itemIndex: count,
+                            size: _sizeMaker(model.cartItems[count]),
                             onAddPressed: (int index){
                               model.increaseCount(index);
                             },
@@ -302,18 +323,18 @@ class CartItemState extends State<CartItem> {
                             width:20.0,
                             height:20.0,
                             decoration: BoxDecoration(
-                              color: Colors.blue,
+                              color: widget.selectedColor,
                               shape: BoxShape.circle,
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left:8.0),
-                            child: Text(
+                            child: 1==1 ? Container() : Text(
                               'Navy Blue',
                               style: TextStyle(
                                   fontFamily: 'OpenSans'
                               ),
-                            ),
+                            )
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left:8.0),

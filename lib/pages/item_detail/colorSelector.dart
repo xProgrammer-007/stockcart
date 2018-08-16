@@ -56,8 +56,12 @@ class _ColorSelectorState extends State<ColorSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: _buildColors(),
+    return Container(
+      height: 30.0,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: _buildColors(),
+      ),
     );
   }
 }

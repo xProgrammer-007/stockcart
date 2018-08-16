@@ -11,13 +11,13 @@ class Cart{
    ClothingType clothingType;
 
    ShirtSizeType shirtSizeType;
-   JeansSizeType jeansSizeType;
+   int jeansSizeType;
 
 
   Cart({
     this.itemName = '',
     this.clothingType = ClothingType.none,
-    this.jeansSizeType = JeansSizeType.none,
+    this.jeansSizeType = 0,
     this.shirtSizeType = ShirtSizeType.none,
     this.itemCount = 1,
     this.itemColor = Colors.white,
@@ -66,8 +66,11 @@ class CustomColor{
   String colorHex;
   String name;
   Color colorValue;
-  CustomColor(color,name){
-    colorValue = new Color(int.parse('0xFF$colorHex',radix: 16));
+  CustomColor({
+      this.colorHex = '',
+      this.name = ''
+    }){
+    colorValue = new Color(int.parse('0xFF$colorHex'));
   }
 }
 
