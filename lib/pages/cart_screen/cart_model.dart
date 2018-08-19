@@ -9,7 +9,8 @@ class Cart{
    int itemCount;
    Color itemColor;
    ClothingType clothingType;
-
+   String subTitle;
+   int salePercent;
    ShirtSizeType shirtSizeType;
    int jeansSizeType;
 
@@ -22,7 +23,9 @@ class Cart{
     this.itemCount = 1,
     this.itemColor = Colors.white,
     this.itemImageUrl = '',
-    this.itemRate = ''
+    this.itemRate = '',
+    this.salePercent = 0,
+    this.subTitle = '',
   });
 }
 

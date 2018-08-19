@@ -21,10 +21,10 @@ Future<void>  main() async  {
   final FirebaseApp app = await FirebaseApp.configure(
     name: 'test',
     options: const FirebaseOptions(
-      googleAppID: '1:219870493006:android:68849c4639f85d41',
-      gcmSenderID: '219870493006',
-      apiKey: 'AIzaSyDtiVVFMrbVU7-DeFn2HtYZvbRASYf_Gco',
-      projectID: 'stockcart-bf691',
+      googleAppID: 'GooleAppId',
+      gcmSenderID: 'gcmSenderId',
+      apiKey: 'Api Key',
+      projectID: 'id-project',
     ),
   );
   final Firestore firestore = new Firestore(app: app);

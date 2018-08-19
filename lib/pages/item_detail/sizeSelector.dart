@@ -12,21 +12,27 @@ class SizeSelector extends StatefulWidget {
   final List<int> jeansSizeTypes;
   String selectedSize;
 
+
   SizeSelector({
     this.clothingType = ClothingType.none,
     this.jeansSizeTypes = const [],
     this.shirtSizeTypes = const [],
     this.onTap,
   }){
-    selectedSize
-    = clothingType == ClothingType.jeans
-        ? jeansSizeTypes.length != 0 ? _determineSize(jeansSizeTypes[0]) : null
-        : clothingType == ClothingType.shirt
-        ? shirtSizeTypes.length != 0 ? _determineSize(shirtSizeTypes[0]) : null
-        : clothingType == ClothingType.tee_shirt
-        ? shirtSizeTypes.length != 0 ? _determineSize(shirtSizeTypes[0]) : null
-        : null
-    ;
+
+    switch(clothingType){
+      case ClothingType.jeans:
+        selectedSize = jeansSizeTypes.length != 0 ? _determineSize(jeansSizeTypes[0]) : null;
+        break;
+      case ClothingType.shirt:
+      case ClothingType.tee_shirt:
+      selectedSize = shirtSizeTypes.length != 0 ? _determineSize(shirtSizeTypes[0]) : null;
+        break;
+      case ClothingType.none:
+        break;
+      case ClothingType.shoes:
+        break;
+    }
   }
 
   String _determineSize(size){
@@ -80,27 +86,31 @@ class SizeSelectorState extends State<SizeSelector> {
     return sizes.map((size){
       return GestureDetector(
         onTap: (){
+          print('xxx');
           widget.onTap(size);
           setState(() {
             widget.selectedSize = widget._determineSize(size);
           });
         },
         child: Container(
-
           margin: EdgeInsets.symmetric(horizontal:3.0),
-          padding: EdgeInsets.all(7.0),
+          padding: EdgeInsets.all(10.0),
           decoration: BoxDecoration(
+          shape: BoxShape.circle,
               color: widget.selectedSize == widget._determineSize(size) ? Colors.deepOrange : Colors.white,
               border: Border.all(
                   width: 1.0,
                   color: widget.selectedSize == widget._determineSize(size) ? Colors.transparent : Colors.black12
               )
           ),
-          child: Text(
-            '${widget._determineSize(size).toUpperCase()}',
-            style: TextStyle(
-                fontFamily: 'JosefinSans',
-                color: widget.selectedSize == widget._determineSize(size) ? Colors.white : Colors.black54
+          child: Center(
+            child: Text(
+              '${widget._determineSize(size).toUpperCase()}',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontFamily: 'JosefinSans',
+                  color: widget.selectedSize == widget._determineSize(size) ? Colors.white : Colors.black54
+              ),
             ),
           ),
         ),
@@ -113,7 +123,7 @@ class SizeSelectorState extends State<SizeSelector> {
     return ScopedModelDescendant<CartBloc>(
       builder: (context,child,model){
         return Container(
-          height: 30.0,
+          height: 50.0,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: _buildSelector(model),

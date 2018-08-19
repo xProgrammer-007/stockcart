@@ -4,6 +4,7 @@ import 'package:stockcart/components/customAppbar.dart';
 import 'package:stockcart/pages/cart_screen/cart_bloc.dart';
 import 'package:stockcart/pages/cart_screen/cart_model.dart';
 import 'package:stockcart/pages/item_detail/sizeConverters.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class CartScreen extends StatefulWidget {
   @override
@@ -29,7 +30,7 @@ String _sizeMaker(Cart cartItem){
       break;
 
     }
-    return size;
+    return size.toUpperCase();
   }
   @override
   Widget build(BuildContext context) {
@@ -64,7 +65,7 @@ String _sizeMaker(Cart cartItem){
                           crossAxisCount: 1,
                           mainAxisSpacing: 10.0,
                           crossAxisSpacing: 20.0,
-                          childAspectRatio: 1.7
+                          childAspectRatio: 1.6
                       ),
                       delegate: SliverChildBuilderDelegate(
                             (BuildContext context,int count){
@@ -79,6 +80,8 @@ String _sizeMaker(Cart cartItem){
                             onAddPressed: (int index){
                               model.increaseCount(index);
                             },
+                            subTitle: model.cartItems[count].subTitle,
+                            salePercent: model.cartItems[count].salePercent,
                             onDeletePressed: (int index){
                               model.removeItem(index);
                             },
@@ -169,59 +172,60 @@ class PositionedAppbarCart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned(
       top:0.0,right:0.0,left:0.0,
-      child: AppBarCustomCurved(
-        showActions: false,
-        showLeading: false,
-        height:100.0,
-        title: Padding(
-          padding: const EdgeInsets.only(top:10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Text(
-                  'Summary',
-                  style:TextStyle(
-                      fontFamily: 'JosefinSans',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16.0
-                  )
+      child: ScopedModelDescendant<CartBloc>(
+        builder: (context,child,model){
+
+          _calculateTotal(){
+              int price = 0;
+              model.cartItems.map((item){
+                price+=int.parse(item.itemRate);
+              }).toString();
+              return price;
+          }
+
+          return AppBarCustomCurved(
+            showActions: false,
+            showLeading: false,
+            height:100.0,
+            title: Padding(
+              padding: const EdgeInsets.only(top:10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Total',
+                    style: TextStyle(
+                        fontFamily: 'JosefinSans',
+                        fontWeight:FontWeight.w500,
+                        fontSize: 20.0,
+                        color: Colors.white,
+                        decorationStyle: TextDecorationStyle.dashed
+                    ),
+                  ),
+                  Container(width:10.0,color:Colors.white),
+                  Image.asset(
+                    'assets/image/rupee_normal.png',
+                    color: Colors.white,
+                    width: 8.0,
+                    height: 15.0,
+                  ),
+                  Container(width:5.0),
+                  Text(
+                   _calculateTotal().toString(),
+                    style: TextStyle(
+                        fontFamily: 'JosefinSans',
+                        fontWeight:FontWeight.w500,
+                        fontSize: 20.0,
+                        color: Colors.white,
+                        decorationStyle: TextDecorationStyle.dashed
+                    ),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal:4.0),
-                child: Container(width:20.0,height:2.5,color: Colors.white.withOpacity(0.6),),
-              ),
-              Text(
-                  'Checkout',
-                  style:TextStyle(
-                      fontFamily: 'JosefinSans',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16.0
-                  )
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal:4.0),
-                child: Container(width:20.0,height:2.5,color: Colors.white.withOpacity(0.6),),
-              ),
-              Text(
-                  'Payment',
-                  style:TextStyle(
-                      fontFamily: 'JosefinSans',
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16.0
-                  )
-              ),
-            ],
-          ),
-        ),
-        subtitle: Container(
-//          padding: EdgeInsets.only(top:20.0),
-//          height: 30.0,
-//          width: double.infinity,
-//          child: Material(
-//              color: Colors.transparent,
-//              child: DottedProgressIndicator()
-//          ),
-        ),
+            ),
+            subtitle: Container(),
+          );
+        },
       ),
     );
   }
@@ -239,6 +243,8 @@ class CartItem extends StatefulWidget {
   final int itemIndex;
   final Function onAddPressed;
   final Function onSubtractPressed;
+  final String subTitle;
+  final int salePercent;
 
 
   CartItem({
@@ -252,7 +258,9 @@ class CartItem extends StatefulWidget {
     this.networkImagePath = '',
     this.itemCount,
     this.selectedColor = Colors.white,
-    this.size = ''
+    this.size = '',
+    this.subTitle = '',
+    this.salePercent = 0
   }) : super(key: key);
 
 
@@ -288,29 +296,62 @@ class CartItemState extends State<CartItem> {
                             fontWeight: FontWeight.w600
                         ),
                       ),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.only(top:8.0),
-                        child: Text(
-                          'Rs ${widget.rate}',
-                          style: TextStyle(
-                              fontSize: 14.0,
-                              fontFamily: 'OpenSans',
-                              fontWeight: FontWeight.w400
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(height:5.0),
+                          Text(
+                              '${widget.subTitle}',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.black45
+                            ),
                           ),
-                        ),
+
+                          Padding(
+                            padding: const EdgeInsets.only(top:8.0),
+                            child:Row(
+                              children:[
+                                Image.asset(
+                                  'assets/image/rupee_normal.png',
+                                  color: Colors.deepOrange,
+                                  width: 10.0,
+                                  height: 20.0,
+                                ),
+                                Container(width:10.0),
+                                Text(
+                                  '${widget.rate.toString()}'.toUpperCase(),
+                                  style: TextStyle(
+                                      fontFamily: 'JosefinSans',
+                                      fontWeight:FontWeight.w500,
+                                      fontSize: 24.0,
+                                      color: Colors.deepOrange
+                                  ),
+                                ),
+                                Container(width:10.0),
+                                Text(
+                                  '${widget.salePercent.toString()} % off'.toUpperCase(),
+                                  style: TextStyle(
+                                      fontFamily: 'OpenSans',
+                                      fontWeight:FontWeight.w500,
+                                      fontSize: 13.0,
+                                      color: Colors.green
+                                  ),
+                                ),
+                              ]
+                            )
+                          ),
+                        ],
                       ),
                       leading: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: FadeInImage(
-                          placeholder: AssetImage(
-                            'assets/placeholder_image.png',
-                          ),
-                          fit: BoxFit.cover,
+                        child: new CachedNetworkImage(
                           height: 100.0,
-                          width:100.0,
-                          image: NetworkImage(
-                              widget.networkImagePath,
-                          ),
+                          width: 100.0,
+                          fit: BoxFit.cover,
+                          imageUrl: widget.networkImagePath,
+                          placeholder: new CircularProgressIndicator(),
+                          errorWidget: new Icon(Icons.error),
                         ),
                       ),
                     ),
@@ -341,7 +382,8 @@ class CartItemState extends State<CartItem> {
                             child: Text(
                               'Size : ${widget.size}',
                               style: TextStyle(
-                                  fontFamily: 'OpenSans'
+                                  fontFamily: 'OpenSans',
+                                  fontWeight: FontWeight.w500
                               ),
                             ),
                           )

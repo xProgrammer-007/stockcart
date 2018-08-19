@@ -12,7 +12,6 @@ class CartBloc extends Model{
     this.cartItems = [
 
     ];
-
   }
   //List<Cart> get cartItems => _cartItems;
 

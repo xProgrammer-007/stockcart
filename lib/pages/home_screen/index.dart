@@ -9,7 +9,6 @@ import 'package:stockcart/pages/item_detail/index.dart';
 class HomeScreenIndexPage extends StatelessWidget {
 
   final Firestore firestore;
-  ClothingType clothingType;
 
   HomeScreenIndexPage(this.firestore);
 
@@ -25,6 +24,7 @@ class HomeScreenIndexPage extends StatelessWidget {
 
   ClothingType _decideClothingType(clothingType){
    ClothingType type;
+   print(clothingType.toString());
     switch(clothingType.toString()){
      case 'ClothingType.jeans':
        type = ClothingType.jeans;
@@ -85,8 +85,8 @@ class HomeScreenIndexPage extends StatelessWidget {
           expandedHeight: 200.0,
           flexibleSpace: FlexibleSpaceBar(
             background: FadeInImage(
-              placeholder: AssetImage(
-                'assets/image/placeholder.jpg',
+              placeholder: NetworkImage(
+                'http://www.machovibes.com/wp-content/uploads/2017/12/All-Time-Best-Formal-Outfits-For-Men-feature.jpg',
               ),
               fit: BoxFit.cover,
               image:NetworkImage('')
@@ -147,7 +147,7 @@ class HomeScreenIndexPage extends StatelessWidget {
              delegate: SliverChildBuilderDelegate((BuildContext context , int i){
                final DocumentSnapshot document = snapshot.data.documents[i];
                 print(document);
-               clothingType = _decideClothingType(document['clothingType']);
+               final clothingType = _decideClothingType(document['clothingType']);
 
                return Container(
                  width: double.infinity,
@@ -161,7 +161,7 @@ class HomeScreenIndexPage extends StatelessWidget {
                              salePercent: document['salePercent'].toString(),
                              itemRate: document['itemRate'].toString(),
                              itemName: document['itemName'].toString(),
-                             clothingType:ClothingType.jeans,
+                             clothingType:clothingType,
                              subTitle: document['subTitle'].toString(),
                              colorChoices: (document['colorChoices'] as List).map((hexColor){
                                return new CustomColor(
@@ -170,10 +170,10 @@ class HomeScreenIndexPage extends StatelessWidget {
                                );
                              }).toList(),
                              jeansSizeTypes: clothingType == ClothingType.jeans
-                                 ? _numberSizeMaker((document['jeansSizeTypes'] as List).cast<String>().toList())
+                                 ? _numberSizeMaker((document['jeansSizeTypes'] != null ? document['jeansSizeTypes'] : const [] as List).cast<String>().toList())
                                  : null,
-                             shirtSizeTypes: (clothingType == ClothingType.shirt || clothingType == ClothingType.tee_shirt)
-                                 ? _shirtSizeMaker((document['shirtSizeTypes'] as List))
+                             shirtSizeTypes: clothingType == ClothingType.shirt
+                                 ? _shirtSizeMaker((document['shirtSizeTypes'] as List).cast<String>().toList())
                                  : null,
                              sellerContact: document['sellerContact'].toString(),
                              about: document['about'].toString(),
@@ -208,17 +208,33 @@ class HomeScreenIndexPage extends StatelessWidget {
                          ),
                          Padding(
                            padding: const EdgeInsets.symmetric(horizontal:5.0),
-                           child: Container(
-                             margin: EdgeInsets.only(top:5.0),
-                             height:20.0,
-                             child: Stack(
-                               children: <Widget>[
-                                 Image.asset(
-                                   'assets/image/new_icon.png',
-                                   fit: BoxFit.cover,
+                           child: Row(
+                             crossAxisAlignment: CrossAxisAlignment.end,
+                             children: <Widget>[
+                               Container(
+                                 margin: EdgeInsets.only(top:5.0),
+                                 height:20.0,
+                                 child: Stack(
+                                   children: <Widget>[
+                                     Image.asset(
+                                       'assets/image/new_icon.png',
+                                       fit: BoxFit.cover,
+                                     ),
+                                   ],
                                  ),
-                               ],
-                             ),
+                               ),
+                               Container(width:10.0),
+                               Text(
+                                 '${document['salePercent'].toString()}% off',
+                                 style: TextStyle(
+                                   color: Colors.green,
+                                   fontFamily: 'JosefinSans',
+                                   fontSize: 16.0,
+                                   fontStyle: FontStyle.italic,
+                                   decorationStyle: TextDecorationStyle.dashed
+                                 ),
+                               )
+                             ],
                            ),
                          ),
                          Padding(
