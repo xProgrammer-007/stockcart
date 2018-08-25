@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:stockcart/components/customAppbar.dart';
+import 'package:stockcart/pages/account_screen/account_bloc.dart';
 import 'package:stockcart/pages/cart_screen/cart_bloc.dart';
+import 'package:stockcart/pages/cart_screen/cart_item.dart';
 import 'package:stockcart/pages/cart_screen/cart_model.dart';
 import 'package:stockcart/pages/item_detail/sizeConverters.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -34,77 +36,126 @@ String _sizeMaker(Cart cartItem){
   }
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(top:100.0),
-          child: ScopedModelDescendant<CartBloc>(
+    return Scaffold(
+      body: Stack(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(top:100.0),
+            child: ScopedModelDescendant<CartBloc>(
 
-            builder: (context,child,model) =>
-                CustomScrollView(
-                  slivers: <Widget>[
-                    model.cartItems.length == 0
-                        ? SliverList(
-                        delegate:SliverChildListDelegate([
-                          Padding(
-                            padding: const EdgeInsets.only(top:30.0),
-                            child: Center(
-                                child:Text(
-                                  'No items in cart',
-                                  style: TextStyle(
-                                      fontSize: 25.0,
-                                      color: Colors.black54
-                                  ),
-                                )
+              builder: (context,child,model) =>
+                  CustomScrollView(
+                    slivers: <Widget>[
+                      model.cartItems.length == 0
+                          ? SliverList(
+                          delegate:SliverChildListDelegate([
+                            Padding(
+                              padding: const EdgeInsets.only(top:30.0),
+                              child: Center(
+                                  child:Image.asset(
+                                    'assets/image/empty-cart.png'
+                                    ,fit: BoxFit.cover,
+                                  )
+                              ),
                             ),
-                          )
-                        ])
-                    ) :
-                    SliverGrid(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 1,
-                          mainAxisSpacing: 10.0,
-                          crossAxisSpacing: 20.0,
-                          childAspectRatio: 1.6
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                            (BuildContext context,int count){
-                          return CartItem(
-                            networkImagePath: model.cartItems[count].itemImageUrl,
-                            rate: model.cartItems[count].itemRate,
-                            itemName: model.cartItems[count].itemName,
-                            selectedColor: model.cartItems[count].itemColor,
-                            itemCount: model.cartItems[count].itemCount,
-                            itemIndex: count,
-                            size: _sizeMaker(model.cartItems[count]),
-                            onAddPressed: (int index){
-                              model.increaseCount(index);
-                            },
-                            subTitle: model.cartItems[count].subTitle,
-                            salePercent: model.cartItems[count].salePercent,
-                            onDeletePressed: (int index){
-                              model.removeItem(index);
-                            },
-                            onSubtractPressed: (int index){
-                              model.decreaseCount(index);
-                            },
-                          );
-                        },
-                        childCount: model.cartItems.length,
-                      ),
-                    ),
-                    new CheckOutBtn(
-                      model: model,
-                    )
+                            Padding(
+                              padding: const EdgeInsets.all(30.0),
+                              child: Center(
+                                child: Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      color: Colors.redAccent,
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.redAccent,
+                                            spreadRadius: 5.0,
+                                            blurRadius: 10.0,
+                                            offset: Offset(0.0,10.0)
+                                        ),
+                                      ],
+                                      borderRadius: BorderRadius.circular(30.0)
+                                  ),
+                                  child: FlatButton(
+                                    onPressed: (){
 
-                  ],
-                ),
-            // },
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.all(15.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisSize:MainAxisSize.max,
+                                        children: <Widget>[
+                                          Text(
+                                            'Go Shopping',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18.0,
+                                                fontFamily: 'OpenSans'
+                                            ),
+                                          ),
+                                          Expanded(child: Container(),),
+                                          Icon(Icons.chevron_right,color: Colors.white,)
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                          ])
+                      ) :
+                      SliverGrid(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 1,
+                            mainAxisSpacing: 10.0,
+                            crossAxisSpacing: 20.0,
+                            childAspectRatio: 1.6
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                              (BuildContext context,int count){
+                            return CartItem(
+                              networkImagePath: model.cartItems[count].itemImageUrl,
+                              rate: model.cartItems[count].itemRate,
+                              itemName: model.cartItems[count].itemName,
+                              selectedColor: model.cartItems[count].itemColor,
+                              itemCount: model.cartItems[count].itemCount,
+                              itemIndex: count,
+                              size: _sizeMaker(model.cartItems[count]),
+                              onAddPressed: (int index){
+                                model.increaseCount(index);
+                              },
+                              subTitle: model.cartItems[count].subTitle,
+                              salePercent: model.cartItems[count].salePercent,
+                              onDeletePressed: (int index){
+                                model.removeItem(index);
+                              },
+                              onSubtractPressed: (int index){
+                                model.decreaseCount(index);
+                              },
+                            );
+                          },
+                          childCount: model.cartItems.length,
+                        ),
+                      ),
+                      new CheckOutBtn(
+                        model: model,
+                      )
+                    ],
+                  ),
+            ),
           ),
-        ),
 
-        new PositionedAppbarCart(),
-      ],
+         new ScopedModelDescendant<AccountBloc>(
+            builder:(context,child,model){
+              return new PositionedAppbarCart(
+                accountBloc: model,
+              );
+            }
+          ),
+        ],
+      ),
     );
   }
 }
@@ -164,8 +215,10 @@ class CheckOutBtn extends StatelessWidget {
 }
 
 class PositionedAppbarCart extends StatelessWidget {
+  final AccountBloc accountBloc;
   const PositionedAppbarCart({
     Key key,
+   @required this.accountBloc
   }) : super(key: key);
 
   @override
@@ -178,15 +231,31 @@ class PositionedAppbarCart extends StatelessWidget {
           _calculateTotal(){
               int price = 0;
               model.cartItems.map((item){
-                price+=int.parse(item.itemRate);
+                price+= int.parse(item.itemRate) * item.itemCount;
               }).toString();
               return price;
           }
 
           return AppBarCustomCurved(
-            showActions: false,
+            showActions: true,
             showLeading: false,
-            height:100.0,
+            actions: <Widget>[
+              new StreamBuilder(
+                stream: accountBloc.userData.asBroadcastStream(),
+                builder: (BuildContext context, AsyncSnapshot<User> snapshot){
+                  return new Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: new Material(
+                      shape: new CircleBorder(),
+                      child: snapshot.hasData && snapshot.data.photoUrl != null ? CircleAvatar(
+                        backgroundImage: CachedNetworkImageProvider(snapshot.data?.photoUrl),
+                      ) : Container()
+                    ),
+                  );
+                },
+              )
+            ],
+            height:110.0,
             title: Padding(
               padding: const EdgeInsets.only(top:10.0),
               child: Row(
@@ -231,414 +300,3 @@ class PositionedAppbarCart extends StatelessWidget {
   }
 }
 
-class CartItem extends StatefulWidget {
-
-  final String networkImagePath;
-  final String itemName;
-  final String rate;
-  final Color selectedColor;
-  final String size;
-  final int itemCount;
-  final Function onDeletePressed;
-  final int itemIndex;
-  final Function onAddPressed;
-  final Function onSubtractPressed;
-  final String subTitle;
-  final int salePercent;
-
-
-  CartItem({
-    Key key,
-    this.rate,
-    this.itemIndex,
-    this.onAddPressed,
-    this.onDeletePressed,
-    this.onSubtractPressed,
-    this.itemName = '',
-    this.networkImagePath = '',
-    this.itemCount,
-    this.selectedColor = Colors.white,
-    this.size = '',
-    this.subTitle = '',
-    this.salePercent = 0
-  }) : super(key: key);
-
-
-
-
-  @override
-  CartItemState createState() {
-    return new CartItemState();
-  }
-}
-
-class CartItemState extends State<CartItem> {
-
-
-  @override
-  Widget build(BuildContext context) {
-    return ScopedModelDescendant<CartBloc>(
-      builder: (context,child,model){
-        return Container(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-                elevation: 4.0,
-                child: Column(
-                  children: <Widget>[
-                    ListTile(
-                      title:Text(
-                        widget.itemName,
-                        style: TextStyle(
-                            fontFamily: 'OpenSans',
-                            fontSize: 16.0,
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w600
-                        ),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(height:5.0),
-                          Text(
-                              '${widget.subTitle}',
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Colors.black45
-                            ),
-                          ),
-
-                          Padding(
-                            padding: const EdgeInsets.only(top:8.0),
-                            child:Row(
-                              children:[
-                                Image.asset(
-                                  'assets/image/rupee_normal.png',
-                                  color: Colors.deepOrange,
-                                  width: 10.0,
-                                  height: 20.0,
-                                ),
-                                Container(width:10.0),
-                                Text(
-                                  '${widget.rate.toString()}'.toUpperCase(),
-                                  style: TextStyle(
-                                      fontFamily: 'JosefinSans',
-                                      fontWeight:FontWeight.w500,
-                                      fontSize: 24.0,
-                                      color: Colors.deepOrange
-                                  ),
-                                ),
-                                Container(width:10.0),
-                                Text(
-                                  '${widget.salePercent.toString()} % off'.toUpperCase(),
-                                  style: TextStyle(
-                                      fontFamily: 'OpenSans',
-                                      fontWeight:FontWeight.w500,
-                                      fontSize: 13.0,
-                                      color: Colors.green
-                                  ),
-                                ),
-                              ]
-                            )
-                          ),
-                        ],
-                      ),
-                      leading: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: new CachedNetworkImage(
-                          height: 100.0,
-                          width: 100.0,
-                          fit: BoxFit.cover,
-                          imageUrl: widget.networkImagePath,
-                          placeholder: new CircularProgressIndicator(),
-                          errorWidget: new Icon(Icons.error),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(left:15.0,top:20.0),
-                      padding: const EdgeInsets.symmetric(vertical:10.0,horizontal:8.0),
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            width:20.0,
-                            height:20.0,
-                            decoration: BoxDecoration(
-                              color: widget.selectedColor,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left:8.0),
-                            child: 1==1 ? Container() : Text(
-                              'Navy Blue',
-                              style: TextStyle(
-                                  fontFamily: 'OpenSans'
-                              ),
-                            )
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left:8.0),
-                            child: Text(
-                              'Size : ${widget.size}',
-                              style: TextStyle(
-                                  fontFamily: 'OpenSans',
-                                  fontWeight: FontWeight.w500
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal:8.0),
-                      child: Row(
-                        children: <Widget>[
-                          IconButton(
-                            onPressed: (){
-                              widget.onDeletePressed(widget.itemIndex);
-                            },
-                            icon: Icon(Icons.delete,color: Colors.black38,),
-                          ),
-                          Expanded(child: Container(),),
-                          Container(
-                            width:50.0,
-                            child: FlatButton(
-                              child: Icon(Icons.remove_circle_outline,color: Colors.grey,),
-                              onPressed: (){
-                                widget.onSubtractPressed(widget.itemIndex);
-                              },
-                            ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                  color:Colors.deepOrange,
-                                  width: 1.0,
-                                ),
-                                borderRadius: BorderRadius.circular(10.0)
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Row(
-                                children: <Widget>[
-                                  Text(
-                                    '${widget.itemCount}',
-                                    style: TextStyle(
-                                        color: Colors.deepOrange,
-                                        fontFamily: 'OpenSans',
-                                        fontSize: 14.0
-                                    ),
-                                  )
-                                  ,Container(
-                                    margin: EdgeInsets.only(left:10.0),
-                                    width:1.5,
-                                    height:25.0,
-                                    color:Colors.deepOrange,
-                                  ),
-                                  FlatButton(
-                                    onPressed: (){
-                                      widget.onAddPressed(widget.itemIndex);
-                                    },
-                                    child: Text(
-                                      '+ Add',
-                                      style: TextStyle(
-                                          color: Colors.deepOrange,
-                                          fontFamily: 'OpenSans',
-                                          fontSize: 14.0
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                )
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-
-class DottedLinePrinter extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: DottedLinePainter(
-          noOfDots: 40
-      ),
-    );
-  }
-}
-
-
-
-class DottedLinePainter extends CustomPainter{
-  Paint dottedLinePaint;
-  final int noOfDots;
-
-  DottedLinePainter({
-    this.noOfDots = 30,
-  }):dottedLinePaint = new Paint(){
-    dottedLinePaint
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 2.0
-      ..color = Colors.white.withOpacity(0.6);
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-
-
-    for(var i =0;i<noOfDots;++i){
-      final startX = i.roundToDouble() * size.width / noOfDots;
-      final endX = (i.roundToDouble() * size.width / noOfDots ) + 5.0;
-      canvas.drawLine(
-          Offset(startX,0.0),
-          Offset(endX,0.0),
-          dottedLinePaint
-      );
-
-    }
-
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
-}
-
-
-
-
-
-
-class DottedProgressIndicator extends StatelessWidget {
-  final double progressPercent;
-  final Color color;
-  DottedProgressIndicator({
-    this.color = Colors.greenAccent,
-    this.progressPercent = 0.5
-  });
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin:EdgeInsets.only(bottom:5.0),
-      height: 30.0,
-      width: double.infinity,
-      child: Stack(
-        fit:StackFit.expand,
-        children: <Widget>[
-          DottedLinePrinter(),
-          CustomPaint(
-            painter: ProgressPainter(
-            ),
-            child: Container(),
-          )
-          //CustomPaint
-        ],
-      ),
-    );
-  }
-}
-
-
-
-class ProgressPainter extends CustomPainter{
-  final double progressPercent;
-  final Color color;
-  Paint progressPainter;
-  ProgressPainter({
-    this.progressPercent = 0.4,
-    this.color = Colors.white
-  }):progressPainter = new Paint(){
-    takeVowelsOut("Axkknaeiou");
-    progressPainter
-      ..strokeCap = StrokeCap.round
-      ..color = color
-      ..style = PaintingStyle.fill
-      ..strokeWidth = 2.5;
-
-
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.drawLine(
-        Offset(0.0,0.0),
-        Offset(size.width - (size.width * progressPercent),0.0),
-        progressPainter);
-
-    canvas.drawCircle(
-        Offset(size.width - (size.width * progressPercent),0.0),
-        10.0,
-        progressPainter
-    );
-
-
-
-    progressPainter
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5
-      ..color = Colors.black26;
-
-
-
-//    canvas.drawCircle(
-//        Offset(size.width - (size.width * progressPercent),0.0),
-//        12.0,
-//        progressPainter
-//    );
-
-    progressPainter
-      ..style = PaintingStyle.fill
-      ..strokeWidth = 1.5
-      ..color = Colors.red;
-
-    canvas.drawCircle(
-        Offset(size.width - (size.width * progressPercent),0.0),
-        3.0,
-        progressPainter
-    );
-
-
-
-  }
-
-  makeCirclePath(Size size){
-    Path path = new Path();
-    path.addOval(
-        Rect.fromCircle(
-            center: Offset(size.width - (size.width * progressPercent),5.0),
-            radius: 15.0
-        )
-    );
-  }
-
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
-
-}
-
-
-String takeVowelsOut(String word){
-  String result;
-  for(var i = 0;i<word.length -1;i++){
-    result = ['a','e','i','o','u'].map((char){
-      return char != word.substring(i,i+1);
-    }).join("");
-  }
-  return result;
-}

@@ -1,23 +1,30 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:stockcart/components/customAppbar.dart';
+import 'package:stockcart/pages/account_screen/account_bloc.dart';
 import 'package:stockcart/pages/account_screen/account_screen.dart';
 import 'package:stockcart/pages/cart_screen/cart_bloc.dart';
 import 'package:stockcart/pages/cart_screen/cart_screen.dart';
 import 'package:stockcart/pages/home_screen/index.dart';
-import 'package:stockcart/pages/home_screen_deals.dart';
-import 'package:stockcart/pages/item_detail/index.dart';
 import 'package:stockcart/pages/orders_screen.dart';
 import 'package:stockcart/pages/wishlist_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'components/navigation-icon-view.dart';
-
+import 'package:sembast/sembast.dart';
+import 'package:sembast/sembast_io.dart';
 
 Future<void>  main() async  {
+  Directory appDocDir = await getApplicationDocumentsDirectory();
+  String appDocPath = appDocDir.path;
+
+  Database db = await databaseFactoryIo
+      .openDatabase(appDocPath + "/sample.db");
+
   final FirebaseApp app = await FirebaseApp.configure(
     name: 'test',
     options: const FirebaseOptions(
@@ -36,14 +43,21 @@ Future<void>  main() async  {
   );
   final Firestore firestore = new Firestore(app: app);
   runApp(
-    new ScopedModel<CartBloc>(
-      model: new CartBloc(),
-      child: new MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: new ThemeData(
-          primarySwatch: Colors.deepOrange,
+    new ScopedModel<AccountBloc>(
+      model: new AccountBloc(firestore),
+      child: new ScopedModel<CartBloc>(
+        model: new CartBloc(
+          database:db
         ),
-        home: new BottomNavigationApp(firestore),
+        child: new MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: new ThemeData(
+            brightness: Brightness.light,
+            primarySwatch: Colors.orange,
+            accentColor: Colors.orange,
+          ),
+          home: new BottomNavigationApp(firestore),
+        ),
       ),
     ),
   );
@@ -90,7 +104,7 @@ class _BottomNavigationAppState extends State<BottomNavigationApp>
       new NavigationIconView(
         icon: const Icon(Icons.favorite),
         title: 'Wishlist',
-        page: new WishlistScreen(),
+        page: WishlistScreen(),
         vsync: this,
       ),
       new NavigationIconView(

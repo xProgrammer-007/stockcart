@@ -111,13 +111,12 @@ class _ScrollGalleryState extends State<ScrollGallery>
             var _decoration;
             if (_currentIndex == index) {
               var _borderColor =
-              widget.borderColor != null ? widget.borderColor : Colors.white;
+              widget.borderColor != null ? widget.borderColor : Colors.black54;
               _decoration = new BoxDecoration(
                    borderRadius: BorderRadius.circular(15.0),
-                  color: Colors.white
               );
             } else {
-              _decoration = new BoxDecoration(color: Colors.white);
+              _decoration = new BoxDecoration(color: Colors.black54);
             }
 
             return new GestureDetector(
@@ -144,7 +143,7 @@ class _ScrollGalleryState extends State<ScrollGallery>
   Widget build(BuildContext context) {
     return Container(
         height: widget.height != null ? widget.height : double.infinity,
-        color: Colors.white,
+        color: Colors.black54,
         child: new Stack(
           children: <Widget>[
             _buildImagePageView(),

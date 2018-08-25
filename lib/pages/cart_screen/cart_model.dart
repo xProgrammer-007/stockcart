@@ -1,6 +1,6 @@
 
-
 import 'package:flutter/material.dart';
+
 
 class Cart{
    String itemName;
@@ -8,6 +8,7 @@ class Cart{
    String itemImageUrl;
    int itemCount;
    Color itemColor;
+   String id;
    ClothingType clothingType;
    String subTitle;
    int salePercent;
@@ -17,6 +18,7 @@ class Cart{
 
   Cart({
     this.itemName = '',
+    @required this.id,
     this.clothingType = ClothingType.none,
     this.jeansSizeType = 0,
     this.shirtSizeType = ShirtSizeType.none,
@@ -27,6 +29,9 @@ class Cart{
     this.salePercent = 0,
     this.subTitle = '',
   });
+
+
+
 }
 
 
@@ -69,12 +74,23 @@ class CustomColor{
   String colorHex;
   String name;
   Color colorValue;
+
   CustomColor({
       this.colorHex = '',
       this.name = ''
     }){
     colorValue = new Color(int.parse('0xFF$colorHex'));
   }
+
+  Map toMap(){
+    Map map = new Map();
+    map["colorHex"] = colorHex;
+    map["name"] = name;
+    return map;
+  }
+
+
 }
+
 
 

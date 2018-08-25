@@ -5,12 +5,16 @@ class AppBarCustomCurved extends StatelessWidget {
   final bool showActions;
   final Widget title;
   final Widget subtitle;
+  final List<Widget> actions;
+  final Widget leading;
   final double height;
 
   AppBarCustomCurved({
     this.showLeading = true,
     this.subtitle,
     this.title,
+    this.leading,
+    this.actions = const [],
     this.height = 100.0,
     this.showActions  = true
   });
@@ -50,12 +54,7 @@ class AppBarCustomCurved extends StatelessWidget {
                         onPressed: null,
                         icon: Icon(Icons.menu,color: Colors.white),
                       ) : null,
-                      actions: showActions ? <Widget>[
-                        IconButton(
-                          onPressed: null,
-                          icon: Icon(Icons.shopping_cart,color: Colors.white),
-                        )
-                      ] : null,
+                      actions: showActions ? actions : null,
                     ),
                     CustomPaint(
                       painter:CirclePaint(),

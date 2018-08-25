@@ -4,65 +4,14 @@ import 'package:stockcart/pages/cart_screen/cart_bloc.dart';
 import 'package:stockcart/pages/cart_screen/cart_model.dart';
 import 'package:stockcart/pages/item_detail/colorSelector.dart';
 import 'package:stockcart/pages/item_detail/gallery.dart';
+import 'package:stockcart/pages/item_detail/shop_item_model.dart';
 import 'package:stockcart/pages/item_detail/sizeSelector.dart';
-
-class ShopItem{
-  final List<String> images;
-   String subTitle;
-   String salePercent;
-  final List<CustomColor> colorChoices;
-  final List<ShirtSizeType> shirtSizeTypes;
-  final List<int> jeansSizeTypes;
-   String about;
-   String sellerContact;
-
-   String itemName;
-   String itemRate;
-   String itemImageUrl;
-  final ClothingType clothingType;
-
-  int itemCount;
-  Color itemColor;
-  ShirtSizeType shirtSizeType;
-  int jeansSizeType;
-
-  ShopItem({
-    this.images = const [],
-    this.subTitle = '',
-    this.colorChoices = const [],
-    this.salePercent,
-    this.shirtSizeTypes = ShirtSizeType.values,
-    this.jeansSizeTypes = const [],
-    this.about = '',
-    this.sellerContact = '',
-    this.itemName = '',
-    this.clothingType = ClothingType.none,
-    this.itemCount = 1,
-    this.itemColor = Colors.white,
-    this.itemImageUrl = '',
-    this.itemRate = ''
-
-  }){
-      print(clothingType);
-      subTitle  = subTitle == null || subTitle == '' ? ' '.toString() : subTitle;
-      salePercent  = salePercent == null ? '' : salePercent;
-      about  = about == null ? '' : about;
-      sellerContact  = sellerContact == null ? '' : sellerContact;
-      itemName  = itemName == null ? '' : itemName;
-      itemRate  = itemRate == null ? '' : itemRate;
-      itemImageUrl  = itemImageUrl == null ? '' : itemImageUrl;
-
-
-  }
-
-}
 
 
 class CartItemDetails extends StatelessWidget {
   Color blackCustom = Colors.black54;
 
   ShopItem shopItem;
-
 
 
   CartItemDetails({
@@ -83,17 +32,52 @@ class CartItemDetails extends StatelessWidget {
     }
   }
 
-
-//  _buildGalleryImages(List<String> imageUrls){
-//    return imageUrls.map((imageUrl){
-//      return imageUrl);
-//    }).toList();
-//  }
+  _addToCart(BuildContext context,CartBloc model,ShopItem shopItem){
+    model.addItem(
+        Cart(
+            id: shopItem.id,
+            itemName: shopItem.itemName,
+            itemImageUrl: shopItem.images[0],
+            itemCount: shopItem.itemCount,
+            itemRate: shopItem.itemRate,
+            salePercent: int.parse(shopItem.salePercent.toString()),
+            subTitle: shopItem.subTitle,
+            itemColor: shopItem.itemColor !=null ? shopItem.itemColor : shopItem.colorChoices[0].colorValue,
+            clothingType: shopItem.clothingType,
+            jeansSizeType: shopItem.clothingType == ClothingType.jeans
+                ? shopItem.jeansSizeType != null
+                ? shopItem.jeansSizeType
+                : shopItem.jeansSizeTypes[0]
+                : 0,
+            shirtSizeType: (shopItem.clothingType == ClothingType.shirt || shopItem.clothingType == ClothingType.tee_shirt)
+                ? shopItem.shirtSizeType != null
+                ? shopItem.shirtSizeType
+                : shopItem.shirtSizeTypes[0]
+                : ShirtSizeType.none
+        )
+    );
+    Scaffold.of(context).showSnackBar(
+        new SnackBar(
+            content: new Text(
+                'Added to Cart'
+            ),
+            action: new SnackBarAction(label: 'UNDO', onPressed: (){
+              model.removeLast();
+              Scaffold.of(context).showSnackBar(
+                  new SnackBar(
+                      content: new Text(
+                          'Removed from Cart'
+                      ),
+                  )
+              );
+            })
+        )
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: ScopedModelDescendant<CartBloc>(
         builder: (context,child,model){
          return Stack(
@@ -115,7 +99,7 @@ class CartItemDetails extends StatelessWidget {
                      child:FloatingActionButton(
                        heroTag: 'asxax',
                        onPressed: (){},
-                       child: Icon(Icons.favorite_border,),
+                       child: Icon(Icons.favorite_border,color: Colors.white,),
                      )
                  ),
                  Padding(
@@ -188,13 +172,12 @@ class CartItemDetails extends StatelessWidget {
                                  fontFamily: 'JosefinSans',
                                  fontWeight:FontWeight.w500,
                                  fontSize: 26.0,
-                                 color: Colors.deepOrange
+                                 color: Colors.orange
                              ),
                            ),
                            Container(width:20.0),
                            Image.asset(
                              'assets/image/rupee_normal.png',
-                             color: Colors.black38,
                              width: 8.0,
                              height: 15.0,
                            ),
@@ -410,7 +393,7 @@ class CartItemDetails extends StatelessWidget {
                      ],
                      border:Border(
                          top:BorderSide(
-                             color: Colors.deepOrange,
+                             color: Colors.transparent,
                              width: 2.0
                          )
                      )
@@ -422,30 +405,9 @@ class CartItemDetails extends StatelessWidget {
                      Expanded(
                        child: Container(
                          child: FlatButton(
-                             color: Colors.white,
+                             color: Colors.black,
                              onPressed: (){
-                               model.addItem(
-                                   Cart(
-                                       itemName: shopItem.itemName,
-                                       itemImageUrl: shopItem.images[0],
-                                       itemCount: shopItem.itemCount,
-                                       itemRate: shopItem.itemRate,
-                                       salePercent: int.parse(shopItem.salePercent.toString()),
-                                       subTitle: shopItem.subTitle,
-                                       itemColor: shopItem.itemColor !=null ? shopItem.itemColor : shopItem.colorChoices[0].colorValue,
-                                       clothingType: shopItem.clothingType,
-                                       jeansSizeType: shopItem.clothingType == ClothingType.jeans
-                                        ? shopItem.jeansSizeType != null
-                                           ? shopItem.jeansSizeType
-                                           : shopItem.jeansSizeTypes[0]
-                                        : 0,
-                                       shirtSizeType: (shopItem.clothingType == ClothingType.shirt || shopItem.clothingType == ClothingType.tee_shirt)
-                                       ? shopItem.shirtSizeType != null
-                                           ? shopItem.shirtSizeType
-                                           : shopItem.shirtSizeTypes[0]
-                                       : ShirtSizeType.none
-                                   )
-                               );
+                               _addToCart(context,model,shopItem);
                              },
                              child:Padding(
                                padding: const EdgeInsets.symmetric(vertical:15.0),

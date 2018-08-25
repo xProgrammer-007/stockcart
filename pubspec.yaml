@@ -12,6 +12,11 @@ dependencies:
   rxdart: ^0.18.1
   scoped_model: ^0.2.0
   cached_network_image: ^0.4.1+1
+  sembast: ^1.9.1+1
+  path_provider: ^0.4.1
+  firebase_auth: ^0.5.18
+  google_sign_in: ^3.0.4
+  flutter_facebook_login: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -31,21 +36,22 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/image/placeholder_image.png
-    - assets/image/geobrowse.png
-    - assets/image/new_icon.png
-    - assets/image/offer_badge.png
-    - assets/image/shirt.jpg
-    - assets/image/offer_titled_image.png
-    - assets/image/offerstag.png
-    - assets/image/placeholder_image.png
-    - assets/image/rupee_normal.png
-    - assets/image/schedule_delivery_truck.png
-    - assets/image/placeholder.jpg
-
-#    - assets/image/placeholder_image.png
-#    - assets/image/placeholder_image.png
-#    - assets/image/placeholder_image.png
+   - assets/image/placeholder_image.png
+   - assets/image/geobrowse.png
+   - assets/image/new_icon.png
+   - assets/image/offer_badge.png
+   - assets/image/shirt.jpg
+   - assets/image/offer_titled_image.png
+   - assets/image/offerstag.png
+   - assets/image/placeholder_image.png
+   - assets/image/rupee_normal.png
+   - assets/image/schedule_delivery_truck.png
+   - assets/image/placeholder.jpg
+   - assets/image/empty-cart.png
+   - assets/image/google.png
+   - assets/image/twitter.png
+   - assets/image/fbicon.png
+   - assets/image/wishlist.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
