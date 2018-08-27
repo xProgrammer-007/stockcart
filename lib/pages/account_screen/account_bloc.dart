@@ -24,6 +24,13 @@ class AccountBloc extends Model {
     });
   }
 
+
+ bool get isLoggedIn => _isLoggedIn();
+
+ bool _isLoggedIn(){
+   return userData.value !=null && userData.value.uid !=null ? true : false;
+  }
+
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 

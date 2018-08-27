@@ -231,7 +231,7 @@ class PositionedAppbarCart extends StatelessWidget {
           _calculateTotal(){
               int price = 0;
               model.cartItems.map((item){
-                price+= int.parse(item.itemRate) * item.itemCount;
+                price+= int.parse(item.itemRate) * (item.itemCount != null && item.itemCount > 0 ? item.itemCount : 0);
               }).toString();
               return price;
           }

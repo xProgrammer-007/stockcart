@@ -17,7 +17,7 @@ class ShopItem{
   String itemRate;
   String itemImageUrl;
   ClothingType clothingType;
-
+  dynamic recordKey;
   int itemCount;
   Color itemColor;
   ShirtSizeType shirtSizeType;
@@ -29,6 +29,7 @@ class ShopItem{
     this.subTitle = '',
     this.colorChoices = const [],
     this.salePercent,
+    this.recordKey,
     this.shirtSizeTypes = ShirtSizeType.values,
     this.jeansSizeTypes = const [],
     this.about = '',
@@ -41,7 +42,7 @@ class ShopItem{
     this.itemRate = ''
 
   }){
-    print(clothingType);
+    //print(clothingType);
     subTitle  = subTitle == null || subTitle == '' ? ' '.toString() : subTitle;
     salePercent  = salePercent == null ? '' : salePercent;
     about  = about == null ? '' : about;
@@ -57,7 +58,7 @@ class ShopItem{
 
     ClothingType _decideClothingType(clothingType){
       ClothingType type;
-      print(clothingType.toString());
+      //print(clothingType.toString());
       switch(clothingType.toString()){
         case 'ClothingType.jeans':
           type = ClothingType.jeans;
@@ -82,7 +83,7 @@ class ShopItem{
       }).toList();
     }
 
-    List<ShirtSizeType>_shirtSizeMaker(List sizes){
+    List<ShirtSizeType>_shirtSizeMaker(List<dynamic> sizes){
       return sizes.map((size){
         ShirtSizeType type;
         switch(size.toString()){
@@ -112,8 +113,7 @@ class ShopItem{
 
     final clothingTypeQuery = _decideClothingType(document['clothingType']);
 
-    id=document.documentID.toString();
-
+      id=document.documentID.toString();
       images= (document['images'] as List)
           .map((f)=>f.toString()).toList().cast<String>().toList();
       salePercent = document['salePercent'].toString();
@@ -121,6 +121,8 @@ class ShopItem{
       itemName = document['itemName'].toString();
       clothingType = clothingTypeQuery;
       subTitle = document['subTitle'].toString();
+      itemCount = 1;
+      itemImageUrl = document['itemImageUrl'].toString();
       colorChoices = (document['colorChoices'] as List).map((hexColor){
         return new CustomColor(
             name: 'Chewla ',
@@ -129,20 +131,20 @@ class ShopItem{
       }).toList();
       jeansSizeTypes= clothingType == ClothingType.jeans
           ? _numberSizeMaker((document['jeansSizeTypes'] != null ? document['jeansSizeTypes'] : const [] as List).cast<String>().toList())
-          : null;
+          : [];
       shirtSizeTypes= clothingType == ClothingType.shirt
-          ? _shirtSizeMaker((document['shirtSizeTypes'] as List).cast<String>().toList())
-          : null;
+          ? _shirtSizeMaker((document['shirtSizeTypes'] as List))
+          : [];
       sellerContact= document['sellerContact'].toString();
       about= document['about'].toString();
 
   }
 
-  ShopItem.fromMap(Map document){
+  ShopItem.fromMap(Map document , dynamic recordKey){
 
     ClothingType _decideClothingType(clothingType){
       ClothingType type;
-      print(clothingType.toString());
+      //print(clothingType.toString());
       switch(clothingType.toString()){
         case 'ClothingType.jeans':
           type = ClothingType.jeans;
@@ -167,7 +169,7 @@ class ShopItem{
       }).toList();
     }
 
-    List<ShirtSizeType>_shirtSizeMaker(List sizes){
+    List<ShirtSizeType> _shirtSizeMaker(List sizes){
       return sizes.map((size){
         ShirtSizeType type;
         switch(size.toString()){
@@ -196,7 +198,8 @@ class ShopItem{
     }
 
     final clothingTypeQuery = _decideClothingType(document['clothingType']);
-
+    //print(document['shirtSizeTypes']);
+    recordKey = recordKey;
     id=document['id'].toString();
     images= (document['images'] as List)
         .map((f)=>f.toString()).toList().cast<String>().toList();
@@ -204,6 +207,7 @@ class ShopItem{
     itemRate = document['itemRate'].toString();
     itemName = document['itemName'].toString();
     clothingType = clothingTypeQuery;
+    itemImageUrl = document['itemImageUrl'].toString();
     subTitle = document['subTitle'].toString();
     colorChoices = (document['colorChoices'] as List).map((customColor){
       return new CustomColor(
@@ -214,8 +218,8 @@ class ShopItem{
     jeansSizeTypes= clothingType == ClothingType.jeans
         ? _numberSizeMaker((document['jeansSizeTypes'] != null ? document['jeansSizeTypes'] : const [] as List).cast<int>().toList())
         : null;
-    shirtSizeTypes= clothingType == ClothingType.shirt
-        ? _shirtSizeMaker((document['shirtSizeTypes'] as List).cast<String>().toList())
+    shirtSizeTypes = clothingType == ClothingType.shirt
+        ? _shirtSizeMaker((document['shirtSizeTypes']  as List).cast<String>().toList())
         : null;
     sellerContact= document['sellerContact'].toString();
     about= document['about'].toString();
@@ -231,7 +235,7 @@ class ShopItem{
       return customColor.toMap();
     }).toList();
     map["salePercent"] = salePercent;
-    map["shirtSizeTypes"] = shirtSizeTypes.toString();
+    map["shirtSizeTypes"] = shirtSizeTypes.map((ShirtSizeType type) => type.toString()).toList();
     map["jeansSizeTypes"] = jeansSizeTypes;
     map["about"] = about;
     map["sellerContact"] = sellerContact;

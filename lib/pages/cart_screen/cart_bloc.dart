@@ -15,7 +15,7 @@ class CartBloc extends Model{
   BehaviorSubject<List<ShopItem>> savedData;
 
   CartBloc({this.database}) {
-    print('xaxa init');
+    //print('xaxa init');
     this.cartItems = [
 
     ];
@@ -25,8 +25,8 @@ class CartBloc extends Model{
   //List<Cart> get cartItems => _cartItems;
 
    increaseCount(int index) {
-     print(index);
-     print(cartItems[index].itemCount);
+    // print(index);
+    // print(cartItems[index].itemCount);
     cartItems[index].itemCount ++;
      //cartItems[index].itemCount < 999 ?  cartItems[index].itemCount++ : null;
     notifyListeners();
@@ -35,8 +35,8 @@ class CartBloc extends Model{
   decreaseCount(int index) {
 
     cartItems[index].itemCount--;
-    print(index);
-    print(cartItems[index].itemCount);
+    //print(index);
+    //print(cartItems[index].itemCount);
     //cartItems[index].itemCount > 1 ?  cartItems[index].itemCount : null;
     notifyListeners();
 
@@ -62,30 +62,29 @@ class CartBloc extends Model{
 
 
   saveItem(ShopItem shopItem) async {
-  print(shopItem.toString());
+  //print(shopItem.toString());
   Store cartSavedStore = database.getStore("cartSaved");
     Record cartData = new Record(cartSavedStore,shopItem.toJson());
     await database.putRecords([cartData]);
     await cartSavedStore.records.listen((Record cart) {
       // here we know we have a single record
       // .. you'll get dog and cat here
-      print(cart);
+      //print(cart);
     }).asFuture();
   }
 
   void getStoredItems() async{
-    print('axxa');
+    //print('axxa');
     savedData.add(
         await database.getStore("cartSaved").records.map((Record record){
-          print(record.value as Map);
-          return new ShopItem.fromMap(record.value as Map);
+         // print(record.value as Map);
+          return new ShopItem.fromMap(record.value as Map ,record.key);
         }).toList()
     );
   }
 
   removeSaveItem(ShopItem shopItem) async{
-    Store cartSavedStore = database.getStore("cartSaved");
-    await cartSavedStore.delete(shopItem);
+    Store cartSavedStore = await database.getStore("cartSaved").store.delete(shopItem.recordKey);
   }
   
   removeAllSavedItems(BuildContext buildContext) async {

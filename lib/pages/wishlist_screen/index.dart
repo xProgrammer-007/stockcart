@@ -9,6 +9,7 @@ import 'package:stockcart/pages/account_screen/account_bloc.dart';
 import 'package:stockcart/pages/cart_screen/cart_bloc.dart';
 import 'package:stockcart/pages/cart_screen/cart_screen.dart';
 import 'package:stockcart/pages/item_detail/shop_item_model.dart';
+import 'package:stockcart/pages/wishlist_screen/wishlist_model.dart';
 
 class WishlistIndexScreen extends StatefulWidget {
 
@@ -37,6 +38,56 @@ class WishlistIndexScreenState extends State<WishlistIndexScreen> {
     return Scaffold(
       body:Stack(
         children: <Widget>[
+          ScopedModelDescendant<CartBloc>(
+            builder: (context,child,model){
+               model.getStoredItems();
+              return Padding(
+                padding: const EdgeInsets.only(top:118.0),
+                child: new StreamBuilder(
+                  stream: model.savedData.asBroadcastStream(),
+                  builder: (BuildContext context , AsyncSnapshot<List<ShopItem>> snapshot){
+                    if(!snapshot.hasData) return
+                        Padding(
+                          padding: const EdgeInsets.all(30.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              new Center(
+                                child: Image.asset('assets/image/wishlist.png',fit: BoxFit.cover,),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top:8.0),
+                                child: Text(
+                                  'No items to show'.toUpperCase(),
+                                  style: TextStyle(
+                                    color: Colors.orange,
+                                    fontSize: 25.0,
+                                    fontFamily: 'JosefinSans'
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                    return new ListView.builder(
+                      itemCount:snapshot.hasData ? snapshot.data.length : 0,
+                      itemBuilder: (BuildContext context , int i){
+                        final ShopItem shopItem = snapshot.data[i];
+                        return new WishListItem(
+                          image: shopItem.itemImageUrl == null ? shopItem.itemImageUrl : shopItem.images[0],
+                          color: Colors.red,
+                          showFilters: false,
+                          title: shopItem.itemName,
+                          shopItem: shopItem,
+                          cartBloc: model,
+                        );
+                     },
+                    );
+                  },
+                ),
+              );
+            },
+          ),
           Positioned(
             top:0.0,
             left:0.0,
@@ -69,9 +120,9 @@ class WishlistIndexScreenState extends State<WishlistIndexScreen> {
                         'WISHLIST',
                         textAlign: TextAlign.end,
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 30.0,
-                          fontFamily: 'JosefinSans'
+                            color: Colors.white,
+                            fontSize: 30.0,
+                            fontFamily: 'JosefinSans'
                         ),
                       ),
                     ),
@@ -80,22 +131,6 @@ class WishlistIndexScreenState extends State<WishlistIndexScreen> {
                 }
             ),
           ),
-          ScopedModelDescendant<CartBloc>(
-            builder: (context,child,model){
-               model.getStoredItems();
-              return new StreamBuilder(
-                stream: model.savedData.asBroadcastStream(),
-                builder: (BuildContext context , AsyncSnapshot<List<ShopItem>> snapshot){
-                  return new ListView.builder(
-                    itemCount:snapshot.hasData ? snapshot.data.length : 0,
-                    itemBuilder: (BuildContext context , int i){
-                      return new Text('$i');
-                   },
-                  );
-                },
-              );
-            },
-          )
         ],
       )
     );
@@ -103,3 +138,5 @@ class WishlistIndexScreenState extends State<WishlistIndexScreen> {
 
 
 }
+
+

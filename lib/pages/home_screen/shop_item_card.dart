@@ -63,6 +63,7 @@ class CardShopItemState extends State<CardShopItem> {
 
   @override
   Widget build(BuildContext context) {
+    final discountedPrice = int.parse(widget.shopItem.itemRate) - (int.parse(widget.shopItem.itemRate) * int.parse(widget.shopItem.salePercent) * 0.01);
     return ScopedModelDescendant<CartBloc>(
       rebuildOnChange: false,
       builder: (context,child,model){
@@ -126,19 +127,33 @@ class CardShopItemState extends State<CardShopItem> {
                 padding: const EdgeInsets.only(top:10.0,left:5.0,right:5.0),
                 child: Row(
                   children: <Widget>[
-                    Image.asset(
-                      'assets/image/rupee_normal.png',
-                      color: Colors.orangeAccent,
-                      height:15.0,
-                    ),
-                    Container(width:4.0),
-                    Text(
-                      widget.document['itemRate'].toString(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.deepOrangeAccent,
-                      ),
-                    ),
+                Image.asset(
+                'assets/image/rupee_normal.png',
+                  color: Colors.orangeAccent,
+                  height:15.0,
+                ),
+                Container(width:4.0),
+                Text(
+                  '${discountedPrice.round()}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepOrangeAccent,
+                  ),
+                ),Container(width:10.0),
+                Image.asset(
+                  'assets/image/rupee_normal.png',
+                  color: Colors.black12,
+                  height:10.0,
+                ),
+                Container(width:2.0),
+                Text(
+                  widget.shopItem.itemRate,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black26,
+                      decoration: TextDecoration.lineThrough
+                  ),
+                ),
                     Expanded(child: Container(),),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal:5.0,vertical:1.0),

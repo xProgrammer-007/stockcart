@@ -97,7 +97,7 @@ class HomeScreenIndexPage extends StatelessWidget {
                ),
                delegate: SliverChildBuilderDelegate((BuildContext context , int i){
                  final DocumentSnapshot document = snapshot.data.documents[i];
-                  print(document);
+                  //(document);
 
                  ShopItem shopItem = new ShopItem.fromDocumentSnapshot(document);
                  return Container(

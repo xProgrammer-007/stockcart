@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:stockcart/pages/account_screen/account_bloc.dart';
 import 'package:stockcart/pages/account_screen/account_screen.dart';
+import 'package:stockcart/pages/bankCards/bloc.dart';
 import 'package:stockcart/pages/cart_screen/cart_bloc.dart';
 import 'package:stockcart/pages/cart_screen/cart_screen.dart';
 import 'package:stockcart/pages/home_screen/index.dart';
@@ -28,35 +29,28 @@ Future<void>  main() async  {
   final FirebaseApp app = await FirebaseApp.configure(
     name: 'test',
     options: const FirebaseOptions(
-<<<<<<< HEAD
-      googleAppID: 'GooleAppId',
-      gcmSenderID: 'gcmSenderId',
-      apiKey: 'Api Key',
-      projectID: 'id-project',
-=======
-      googleAppID: '',
-      gcmSenderID: '2',
-      apiKey: '',
-      projectID: '',
->>>>>>> 84d8ec903e915b307bf19da7ccbc43f564ebfa0b
+     //Your firebaseOptions here
     ),
   );
   final Firestore firestore = new Firestore(app: app);
   runApp(
-    new ScopedModel<AccountBloc>(
-      model: new AccountBloc(firestore),
-      child: new ScopedModel<CartBloc>(
-        model: new CartBloc(
-          database:db
-        ),
-        child: new MaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: new ThemeData(
-            brightness: Brightness.light,
-            primarySwatch: Colors.orange,
-            accentColor: Colors.orange,
+    new ScopedModel<BankCardBloc>(
+      model: new BankCardBloc(firestore: firestore),
+      child: new ScopedModel<AccountBloc>(
+        model: new AccountBloc(firestore),
+        child: new ScopedModel<CartBloc>(
+          model: new CartBloc(
+              database:db
           ),
-          home: new BottomNavigationApp(firestore),
+          child: new MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: new ThemeData(
+              brightness: Brightness.light,
+              primarySwatch: Colors.orange,
+              accentColor: Colors.orange,
+            ),
+            home: new BottomNavigationApp(firestore),
+          ),
         ),
       ),
     ),
@@ -172,7 +166,7 @@ class _BottomNavigationAppState extends State<BottomNavigationApp>
     return new Scaffold(
       backgroundColor: Colors.white,
       body: new Container(
-        child: _buildTransitionsStack()
+          child: _buildTransitionsStack()
       ),
       bottomNavigationBar: bottomNavigationBar,
     );
